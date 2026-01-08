@@ -8,6 +8,9 @@ public class LindolCollectibleItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // Play collect sound
+            PlayCollectSound();
+            
             // Notify the game manager
             GameManager gameManager = FindFirstObjectByType<GameManager>();
             if (gameManager != null)
@@ -17,6 +20,15 @@ public class LindolCollectibleItem : MonoBehaviour
             
             // Destroy this collectible
             Destroy(gameObject);
+        }
+    }
+    
+    private void PlayCollectSound()
+    {
+        // Try to play sound through AudioManager first
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlayCollectSound();
         }
     }
 }
