@@ -21,7 +21,7 @@ public class UnderTableTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // Check if all items are collected
-            GameManager gameManager = FindObjectOfType<GameManager>();
+            GameManager gameManager = FindFirstObjectByType<GameManager>();
             if (gameManager != null)
             {
                 gameManager.PlayerWentUnderTable();

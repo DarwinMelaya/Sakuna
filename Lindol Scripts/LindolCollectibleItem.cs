@@ -9,7 +9,7 @@ public class LindolCollectibleItem : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // Notify the game manager
-            GameManager gameManager = FindObjectOfType<GameManager>();
+            GameManager gameManager = FindFirstObjectByType<GameManager>();
             if (gameManager != null)
             {
                 gameManager.CollectItem(itemName);
