@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpHeight = 2f;
     private CharacterController controller;
     private float verticalVelocity = 0f;
+    private bool wasMoving = false;
 
     void Start()
     {
@@ -29,6 +30,26 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
         move *= speed;
+        
+        // Handle walking sounds
+        bool isMoving = (x != 0f || z != 0f) && controller.isGrounded;
+        if (isMoving && !wasMoving)
+        {
+            // Started moving
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlayWalkingSound();
+            }
+        }
+        else if (!isMoving && wasMoving)
+        {
+            // Stopped moving
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.StopWalkingSound();
+            }
+        }
+        wasMoving = isMoving;
         
         // Apply gravity and jumping
         if (controller.isGrounded)

@@ -8,6 +8,8 @@ public class AudioManager : MonoBehaviour
     [Header("Sound Effects")]
     public AudioSource sfxSource;
     public AudioClip collectSound;
+    public AudioClip walkingSound;
+    private AudioSource walkingSource;
 
     [Header("Background Music")]
     public AudioSource musicSource;
@@ -22,6 +24,11 @@ public class AudioManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            // Create dedicated AudioSource for walking sounds
+            walkingSource = gameObject.AddComponent<AudioSource>();
+            walkingSource.loop = true;
+            walkingSource.playOnAwake = false;
             
             // Ensure AudioManager doesn't have an AudioListener
             AudioListener audioListener = GetComponent<AudioListener>();
@@ -127,5 +134,22 @@ public class AudioManager : MonoBehaviour
     public void PlayCollectSound()
     {
         sfxSource.PlayOneShot(collectSound);
+    }
+
+    public void PlayWalkingSound()
+    {
+        if (walkingSound != null && walkingSource != null && !walkingSource.isPlaying)
+        {
+            walkingSource.clip = walkingSound;
+            walkingSource.Play();
+        }
+    }
+
+    public void StopWalkingSound()
+    {
+        if (walkingSource != null && walkingSource.isPlaying)
+        {
+            walkingSource.Stop();
+        }
     }
 }
