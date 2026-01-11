@@ -18,12 +18,22 @@ public class GameManager : MonoBehaviour
     public GameObject instructionPanel;
     public TextMeshProUGUI instructionText;
     
+    [Header("Timer Panel")]
+    public GameObject timerPanel;
+    public TextMeshProUGUI timerText;
+    public float timeLimit = 60f; // Time limit in seconds
+    
     private int itemsCollected = 0;
     private bool gameEnded = false;
+    private float timeRemaining;
 
     void Start()
     {
+        // Initialize timer
+        timeRemaining = timeLimit;
+        
         UpdateUI();
+        UpdateTimerUI();
         
         if (winPanel != null) winPanel.SetActive(false);
         if (failPanel != null) failPanel.SetActive(false);
@@ -31,8 +41,69 @@ public class GameManager : MonoBehaviour
         // Show counter panel at start
         if (counterPanel != null) counterPanel.SetActive(true);
         
+        // Show timer panel at start
+        if (timerPanel != null) timerPanel.SetActive(true);
+        
         // Hide instruction text at start
         if (instructionPanel != null) instructionPanel.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (gameEnded) return;
+
+        // Update timer
+        timeRemaining -= Time.deltaTime;
+
+        if (timeRemaining <= 0)
+        {
+            timeRemaining = 0;
+            OnTimerExpired();
+        }
+
+        UpdateTimerUI();
+    }
+
+    void UpdateTimerUI()
+    {
+        if (timerText != null)
+        {
+            // Format time as MM:SS
+            int minutes = Mathf.FloorToInt(timeRemaining / 60);
+            int seconds = Mathf.FloorToInt(timeRemaining % 60);
+            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        }
+    }
+
+    void OnTimerExpired()
+    {
+        if (gameEnded) return;
+        
+        gameEnded = true;
+        Debug.Log("Time's up! Game Over!");
+        
+        // Show fail panel when time expires
+        if (failPanel != null) failPanel.SetActive(true);
+        
+        // Hide timer panel on game over
+        if (timerPanel != null) timerPanel.SetActive(false);
+        
+        // Hide counter panel on game over
+        if (counterPanel != null) counterPanel.SetActive(false);
+        
+        // Hide instruction text on game over
+        if (instructionPanel != null) instructionPanel.SetActive(false);
+        
+        // Unlock cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        // Disable player movement
+        PlayerController player = FindObjectOfType<PlayerController>();
+        if (player != null)
+        {
+            player.enabled = false;
+        }
     }
 
     public void CollectItem(string itemName)
@@ -96,6 +167,9 @@ public class GameManager : MonoBehaviour
         // Hide counter panel on win
         if (counterPanel != null) counterPanel.SetActive(false);
         
+        // Hide timer panel on win
+        if (timerPanel != null) timerPanel.SetActive(false);
+        
         // Hide instruction text on win
         if (instructionPanel != null) instructionPanel.SetActive(false);
         
@@ -123,6 +197,9 @@ public class GameManager : MonoBehaviour
         
         // Hide counter panel on fail
         if (counterPanel != null) counterPanel.SetActive(false);
+        
+        // Hide timer panel on fail
+        if (timerPanel != null) timerPanel.SetActive(false);
         
         // Hide instruction text on fail
         if (instructionPanel != null) instructionPanel.SetActive(false);

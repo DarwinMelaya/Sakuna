@@ -5,15 +5,23 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float mouseSensitivity = 2f;
+    public float sitHeightScale = 0.5f; // Height multiplier when sitting (0.5 = half height)
     
     private Rigidbody rb;
     private Camera playerCamera;
     private float verticalRotation = 0f;
+    private bool isSitting = false;
+    private Vector3 originalScale;
+    private Vector3 originalCameraLocalPosition;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         playerCamera = GetComponentInChildren<Camera>();
+        
+        // Store original scale and camera position
+        originalScale = transform.localScale;
+        originalCameraLocalPosition = playerCamera.transform.localPosition;
         
         // Lock cursor to center of screen
         Cursor.lockState = CursorLockMode.Locked;
@@ -22,6 +30,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Toggle sit with T key
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard != null && keyboard.tKey.wasPressedThisFrame)
+        {
+            ToggleSit();
+        }
+        
         // Mouse look
         Mouse mouse = Mouse.current;
         if (mouse != null)
@@ -58,5 +73,29 @@ public class PlayerController : MonoBehaviour
         movement.Normalize();
         
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+    }
+    
+    void ToggleSit()
+    {
+        isSitting = !isSitting;
+        
+        if (isSitting)
+        {
+            // Sit down - reduce height
+            Vector3 newScale = originalScale;
+            newScale.y *= sitHeightScale;
+            transform.localScale = newScale;
+            
+            // Adjust camera position to maintain eye level
+            Vector3 newCameraPos = originalCameraLocalPosition;
+            newCameraPos.y *= sitHeightScale;
+            playerCamera.transform.localPosition = newCameraPos;
+        }
+        else
+        {
+            // Stand up - restore original height
+            transform.localScale = originalScale;
+            playerCamera.transform.localPosition = originalCameraLocalPosition;
+        }
     }
 }
