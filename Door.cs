@@ -11,6 +11,8 @@ public class Door : MonoBehaviour
         open = true;
     }
 
+    public bool IsFullyOpen => open && Vector3.Distance(transform.position, openPosition) < 0.02f;
+
     void Update()
     {
         if (open)
