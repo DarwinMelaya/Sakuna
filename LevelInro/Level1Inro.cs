@@ -1,16 +1,25 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class Level1Inro : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public VideoPlayer videoPlayer;
+    public GameObject playButton;
+
     void Start()
     {
-        
+        playButton.SetActive(false);
+        videoPlayer.loopPointReached += OnVideoEnd;
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnVideoEnd(VideoPlayer vp)
     {
-        
+        playButton.SetActive(true);
+    }
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene(2); // GameScene
     }
 }
