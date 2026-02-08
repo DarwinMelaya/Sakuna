@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool isSitting = false;
     private Vector3 originalScale;
     private Vector3 originalCameraLocalPosition;
+    private bool isGoBagScene; // In Go Bag we keep cursor visible so player can click items
 
     void Start()
     {
@@ -23,9 +25,18 @@ public class PlayerController : MonoBehaviour
         originalScale = transform.localScale;
         originalCameraLocalPosition = playerCamera.transform.localPosition;
         
-        // Lock cursor to center of screen
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        isGoBagScene = SceneManager.GetActiveScene().name == "Go Bag";
+        // In Go Bag: gamit ang crosshair sa gitna para mag-aim at mag-collect, hindi ang cursor.
+        if (isGoBagScene)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     void Update()
