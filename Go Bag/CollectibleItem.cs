@@ -44,7 +44,10 @@ public class GoBagCollectibleItem : MonoBehaviour
         Ray ray = cam.ScreenPointToRay(screenCenter);
         if (!Physics.Raycast(ray, out RaycastHit hit, float.MaxValue)) return;
 
-        if (hit.collider != itemCollider) return;
+        // Payagan ang kahit aling collider sa loob ng object hierarchy
+        var hitItem = hit.collider.GetComponentInParent<GoBagCollectibleItem>();
+        if (hitItem != this) return;
+
         CollectItem();
     }
 

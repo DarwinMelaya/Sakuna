@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class UIManager : MonoBehaviour
@@ -12,6 +13,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI gameOverText;
     public Button restartButton;
     public Button quitButton;
+    [Tooltip("Shown only when game is finished (won). Loads Scene 3.")]
+    public Button nextButton;
 
     private float feedbackTimer = 0f;
 
@@ -19,10 +22,12 @@ public class UIManager : MonoBehaviour
     {
         gameOverPanel.SetActive(false);
         feedbackText.text = "";
+        if (nextButton != null) nextButton.gameObject.SetActive(false);
 
         // Connect buttons
         restartButton.onClick.AddListener(() => GameManager.Instance.RestartGame());
         quitButton.onClick.AddListener(() => GameManager.Instance.QuitGame());
+        if (nextButton != null) nextButton.onClick.AddListener(() => GameManager.Instance.GoToScene3());
     }
 
     void Update()
@@ -69,6 +74,9 @@ public class UIManager : MonoBehaviour
         gameOverPanel.SetActive(true);
         gameOverText.text = message;
         gameOverText.color = won ? Color.green : Color.red;
+
+        // Show Next button only when game is finished (won) to proceed to Scene 3
+        if (nextButton != null) nextButton.gameObject.SetActive(won);
 
         // Ipakita ang cursor para ma-click ang Restart/Quit buttons
         Cursor.lockState = CursorLockMode.None;

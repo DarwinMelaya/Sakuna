@@ -182,8 +182,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            goBagTimeRemaining -= 5f;
+            if (goBagTimeRemaining < 0) goBagTimeRemaining = 0;
             if (uiManager != null)
-                uiManager.ShowFeedback("✗ " + item.itemName + " - Not needed", false);
+                uiManager.ShowFeedback("✗ " + item.itemName + " - Not needed (-5 sec)", false);
         }
         UpdateGoBagUI();
     }
@@ -201,7 +203,7 @@ public class GameManager : MonoBehaviour
     {
         goBagGameActive = false;
         if (uiManager != null)
-            uiManager.ShowGameOver(playerWon ? "🎉 YOU WIN! Go Bag Ready!" : "⏰ TIME'S UP! Try Again!", playerWon);
+            uiManager.ShowGameOver(playerWon ? "YOU WIN! Go Bag Ready!" : "TIME'S UP! Try Again!", playerWon);
     }
 
     public void PlayerWentUnderTable()
@@ -307,5 +309,11 @@ public class GameManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    /// <summary>Go Bag: load Scene 3 when player finishes (wins) the game.</summary>
+    public void GoToScene3()
+    {
+        SceneManager.LoadScene(3);
     }
 }
